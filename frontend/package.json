@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "@zeit/next-typescript": "^1.1.1",
+    "axios": "^0.18.0",
+    "next": "^7.0.2",
+    "ramda": "^0.26.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "scripts": {
+    "dev": "next"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/ramda": "^0.25.45",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11"
+  }
+}
