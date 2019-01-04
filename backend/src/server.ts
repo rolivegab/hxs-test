@@ -47,6 +47,10 @@ import User from './graphQL/user/resolver'
 import Connection from './core/mongodb'
 Connection()
 
+// Seed Database
+import UserSeed from './graphQL/user/seed'
+UserSeed()
+
 app
 // Express server initialization
 .listen(process.env.PORT as string, () => {

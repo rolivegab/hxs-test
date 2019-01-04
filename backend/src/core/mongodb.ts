@@ -1,14 +1,14 @@
 // Initializing MongoDB Connection
 import MongoDB from 'mongodb'
 
-let connection: MongoDB.MongoClient
+let connection: MongoDB.Db
 
-export default () => new Promise(resolve => {
+export default (): Promise<MongoDB.Db> => new Promise(resolve => {
 	if (connection) {
 		resolve(connection)
 	} else {
-		MongoDB.MongoClient.connect(process.env.MONGO_URI as string).then((conn) => {
-			connection = conn
+		MongoDB.MongoClient.connect(process.env.MONGODB_URI as string, {useNewUrlParser: true}).then((conn) => {
+			connection = conn.db()
 			resolve(connection)
 		})
 	}

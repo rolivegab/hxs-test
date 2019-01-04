@@ -1,8 +1,12 @@
-import { IsEmail } from 'class-validator'
+import { ObjectId } from 'bson'
 import { Field, ObjectType } from 'type-graphql'
+import { ObjectIdScalar } from '../objectScalar'
 
 @ObjectType({ description: "Object representing an user." })
 export default class User {
+	@Field(type => ObjectIdScalar)
+	readonly _id: ObjectId
+
 	@Field()
 	firstname: string
 
@@ -10,7 +14,6 @@ export default class User {
 	lastname: string
 
 	@Field()
-	@IsEmail()
 	email: string
 
 	@Field({nullable: true})
