@@ -1,6 +1,7 @@
-import { Button, Collapse, Divider, ExpansionPanel, ExpansionPanelSummary, Grid, GridList, GridListTile, List, ListItem, ListItemIcon, ListItemText, TextField, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Collapse, Divider, ExpansionPanel, ExpansionPanelSummary, FormControl, FormHelperText, Grid, GridList, GridListTile, Input, InputLabel, List, ListItem, ListItemIcon, ListItemText, TextField, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
+import captureApolloErrors from 'apollo-error-handler'
 import request from 'graph-request'
 import gql from 'graphql-tag'
 import update from 'immutability-helper'
@@ -8,7 +9,7 @@ import { NextContext } from 'next'
 import Link from 'next/link'
 import Router from 'next/router'
 import * as React from 'react'
-import { Mutation, MutationFn, Query } from 'react-apollo'
+import { Mutation, MutationFn } from 'react-apollo'
 import StyledDiv from 'styles/index'
 
 const GET_USERS = gql`
@@ -47,6 +48,11 @@ interface State {
 		lastname: string
 		email: string
 	}
+	error: {
+		firstname: string
+		lastname: string
+		email: string
+	}
 }
 
 interface NewUser {
@@ -79,11 +85,16 @@ export default class extends React.Component<Props, State> {
 		super(props)
 		this.state = {
 			showingAddUser: false,
-			form: {
-				firstname: '',
-				lastname: '',
-				email: '',
-			},
+			form: this.getInitialForm(),
+			error: this.getInitialForm(),
+		}
+	}
+
+	getInitialForm(): State['form'] {
+		return {
+			firstname: '',
+			lastname: '',
+			email: '',
 		}
 	}
 
@@ -110,6 +121,10 @@ export default class extends React.Component<Props, State> {
 		const { firstname, lastname, email } = this.state.form
 		await addUser({
 			variables: { firstname, lastname, email },
+		})
+		// Reseta o formulário
+		this.setState({
+			form: this.getInitialForm(),
 		})
 		Router.push('/')
 	}
@@ -139,25 +154,38 @@ export default class extends React.Component<Props, State> {
 							</ListItem>
 							<Collapse in={this.state.showingAddUser}>
 								<Mutation<NewUser, State['form']> mutation={ADD_USER}>
-									{(addUser, { data: newUser }) => (
-										<form action="javascript:void(0)" className="form" onSubmit={() => this.submit(addUser)}>
+									{(addUser, {error, loading}) => {
+										const errors = captureApolloErrors<State['error']>(error)
+										return <form action="javascript:void(0)" className="form" onSubmit={() => this.submit(addUser)}>
 											<Grid container spacing={16}>
 												<Grid item xs={6}>
-													<TextField name="firstname" onChange={this.inputChange} value={this.state.form.firstname} className="textField" label="Firstname" fullWidth />
+													<FormControl fullWidth error={errors.firstname !== undefined}>
+														<InputLabel>First name</InputLabel>
+														<Input name="firstname" onChange={this.inputChange} value={this.state.form.firstname} className="textField" />
+														<FormHelperText>{errors.firstname}</FormHelperText>
+													</FormControl>
 												</Grid>
 												<Grid item xs={6}>
-													<TextField name="lastname" onChange={this.inputChange} value={this.state.form.lastname} className="textField" label="Lastname" fullWidth />
+													<FormControl fullWidth error={errors.lastname !== undefined}>
+														<InputLabel>Last name</InputLabel>
+														<Input name="lastname" onChange={this.inputChange} value={this.state.form.lastname} className="textField" />
+														<FormHelperText>{errors.lastname}</FormHelperText>
+													</FormControl>
 												</Grid>
 												<Grid item xs={12}>
-													<TextField name="email" onChange={this.inputChange} value={this.state.form.email} className="textField" label="Email" fullWidth />
+													<FormControl fullWidth error={errors.email !== undefined}>
+														<InputLabel>Email</InputLabel>
+														<Input name="email" onChange={this.inputChange} value={this.state.form.email} className="textField" />
+														<FormHelperText>{errors.email}</FormHelperText>
+													</FormControl>
 												</Grid>
 												<Grid item xs={12}>
-													<Button variant="outlined" type="submit">Adicionar</Button>
+													<Button variant="outlined" type="submit">Adicionar {loading && <CircularProgress className="progress" />}</Button>
 												</Grid>
 											</Grid>
 											<br />
 										</form>
-									)}
+									}}
 								</Mutation>
 							</Collapse>
 						</List>

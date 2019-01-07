@@ -32,6 +32,7 @@ app.use(ExpressSession({
 import graphqlHTTP from 'express-graphql'
 import { resolve } from 'path'
 import { buildSchema } from 'type-graphql'
+import { formatArgumentValidationError } from 'type-graphql'
 import User from './graphQL/user/resolver'
 (async () => {
 	app.use('/graphql', graphqlHTTP({
@@ -40,6 +41,7 @@ import User from './graphQL/user/resolver'
 			emitSchemaFile: resolve(__dirname, "schema.gql"),
 		}),
 		graphiql: true,
+		formatError: formatArgumentValidationError,
 	}))
 })()
 

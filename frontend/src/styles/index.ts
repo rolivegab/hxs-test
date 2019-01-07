@@ -16,4 +16,12 @@ export default styled.div`
       margin-right: 20px;
     }
   }
+
+  .progress {
+    /* display: none; */
+    color: black;
+    width: 15px !important;
+    height: 15px !important;
+    margin-left: 10px;
+  }
 `
