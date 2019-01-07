@@ -20,6 +20,8 @@ module.exports = withTypescript({
       systemvars: true
     }))
 
+    config.devtool = "source-map"
+
     return config
   }
 })
