@@ -1,5 +1,6 @@
-import Document, { Head, Main, NextDocumentContext, NextScript } from 'next/document'
-import React from 'react'
+import Axios, { AxiosRequestConfig } from 'axios'
+import Document, { DefaultDocumentIProps, Head, Main, NextDocumentContext, NextScript } from 'next/document'
+import React, { ReactNode } from 'react'
 import { ServerStyleSheet, StyledProps } from 'styled-components'
 import flush from 'styled-jsx/server'
 
@@ -21,21 +22,20 @@ class MyDocument extends Document<StyledProps<any>> {
 			css = pageContext.sheetsRegistry.toString()
 		}
 
+		// UNIVERSAL-COOKIE
 		return {
 			...page,
 			// pageContext,
 			styleTags,
 			// Styles fragment is rendered after the app and page rendering finish.
-			styles: (
-				<React.Fragment>
-					<style
-						id="jss-server-side"
-						// eslint-disable-next-line react/no-danger
-						dangerouslySetInnerHTML={{ __html: css }}
-					/>
-					{flush() || null}
-				</React.Fragment>
-			),
+			styles: <React.Fragment>
+				<style
+					id="jss-server-side"
+					// eslint-disable-next-line react/no-danger
+					dangerouslySetInnerHTML={{ __html: css }}
+				/>
+				{flush() || null}
+			</React.Fragment> as any,
 		}
 	}
 

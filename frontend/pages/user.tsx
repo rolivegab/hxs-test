@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogContent, DialogTitle, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core"
-import graphRequest from "graph-request"
 import gql from 'graphql-tag'
+import graphRequest from "graphRequest"
 import { NextContext } from "next"
 import Link from "next/link"
 import Router from "next/router"

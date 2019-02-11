@@ -7,14 +7,17 @@ export default class User {
 	@Field(type => ObjectIdScalar)
 	readonly _id: ObjectId
 
-	@Field()
+	@Field({description: 'User\'s firstname'})
 	firstname: string
 
-	@Field()
+	@Field({description: 'User\'s lastname'})
 	lastname: string
 
-	@Field()
+	@Field({description: 'User\'s email'})
 	email: string
+
+	@Field({description: 'User\'s password'})
+	password: string
 
 	@Field({nullable: true})
 	get fullName(): string {

@@ -9,6 +9,7 @@ export default (): Promise<MongoDB.Db> => new Promise(resolve => {
 	} else {
 		MongoDB.MongoClient.connect(process.env.MONGODB_URI as string, {useNewUrlParser: true}).then((conn) => {
 			connection = conn.db()
+			console.log('MongoDB connected')
 			resolve(connection)
 		})
 	}

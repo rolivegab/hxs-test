@@ -22,6 +22,11 @@ module.exports = withTypescript({
 
     config.devtool = "source-map"
 
+    config.node = {
+      ...(config.node || {}),
+      net: 'empty'
+    }
+
     return config
   }
 })

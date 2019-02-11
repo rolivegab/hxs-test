@@ -33,27 +33,39 @@ import graphqlHTTP from 'express-graphql'
 import { resolve } from 'path'
 import { buildSchema } from 'type-graphql'
 import { formatArgumentValidationError } from 'type-graphql'
-import User from './graphQL/user/resolver'
-(async () => {
-	app.use('/graphql', graphqlHTTP({
+import User from './graphQL/users/resolver'
+(() => {
+	app.use('/graphql', graphqlHTTP(async (req) => ({
 		schema: await buildSchema({
 			resolvers: [User],
 			emitSchemaFile: resolve(__dirname, "schema.gql"),
 		}),
 		graphiql: true,
 		formatError: formatArgumentValidationError,
-	}))
+		context: req.session,
+	})))
 })()
 
 // Connect to MongoDB
 import Connection from './core/mongodb'
 Connection()
 
-// Seed Database
-import UserSeed from './graphQL/user/seed'
-UserSeed()
-
 app
+.get('/', (req, res) => {
+	res.json(req.session)
+})
+.get('/:secret', (req, res) => {
+	const {secret} = req.params
+	if (secret && req.session) {
+		req.session.secret = secret
+		res.json(req.session)
+	} else {
+		res.json('failed')
+	}
+})
+.post('/', (req, res) => {
+	res.json(req.session)
+})
 // Express server initialization
 .listen(process.env.PORT as string, () => {
 	console.log(`Server listen at ${process.env.PORT}`)

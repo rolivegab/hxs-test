@@ -28,6 +28,8 @@
 		],
 		"semicolon": [true, "never"],
 		"variable-name": false,
-		"interface-name": false
+		"interface-name": false,
+		"max-classes-per-file": false,
+		"ban-types": false
 	}
 }

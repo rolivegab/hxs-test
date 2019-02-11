@@ -1,12 +1,22 @@
-import { ObjectID, ObjectId } from 'bson'
+import { ObjectId } from 'bson'
 import { plainToClass } from 'class-transformer'
-import { Arg, Field, Mutation, Query } from 'type-graphql'
+import { Arg, Ctx, Mutation, Query } from 'type-graphql'
 import mongodb from '../../core/mongodb'
 import {ObjectIdScalar} from '../objectScalar'
 import AddUserInput from './addUserInput'
 import User from './type'
 
 export default class {
+	@Query(returns => Boolean, {description: 'Apenas um teste'})
+	isLogged(@Ctx() session?: Express.Session) {
+		if (session) {
+			console.log(session.user)
+			return session.user !== undefined
+		}
+
+		return false
+	}
+
 	@Query(returns => [User], { description: "Get all the users from around the world!" })
 	async users() {
 		const db = await mongodb()
@@ -22,7 +32,7 @@ export default class {
 		return user
 	}
 
-	@Mutation(returns => User)
+	@Mutation(returns => User, { description: "Adds an user"})
 	async addUser(@Arg("input") userInput: AddUserInput) {
 		const user = plainToClass(User, userInput)
 
@@ -32,7 +42,7 @@ export default class {
 		return user
 	}
 
-	@Mutation(returns => User, {nullable: true})
+	@Mutation(returns => User, {nullable: true, description: "Deletes an user"})
 	async deleteUser(@Arg("_id", type => ObjectIdScalar) _id: ObjectId) {
 		const db = await mongodb()
 		const {value} = await db.collection<User>('users').findOneAndDelete({_id})
